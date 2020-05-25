@@ -7,6 +7,9 @@ sys_args = sys.argv
 colored = '--colored' in sys_args or '-c' in sys_args
 class_ = '--class' in sys_args or '-cl' in sys_args
 
+LINE_LEN = 140
+FILLER_CHAR = '-'
+
 file_name = None
 
 for arg in sys_args[1:]:
@@ -28,6 +31,22 @@ if os.path.exists(file_name):
 
     exit(1)
 
+def comment_line(text: str = '', indent: int = 0) -> str:
+    start = indent * ' ' + '# '
+    end = ' #' + indent * ' '
+
+    if len(text) > 0:
+        text = ' ' + text.strip() + ' '
+
+    filler_chars_per_part = float(LINE_LEN - len(start) - len(end) - len(text)) / 2
+    filler_chars_before = int(filler_chars_per_part)
+    filler_chars_after = int(filler_chars_per_part)
+
+    if filler_chars_after != filler_chars_per_part:
+        filler_chars_after += 1
+
+    return start + FILLER_CHAR * filler_chars_before + text + FILLER_CHAR * filler_chars_after + end
+
 org_class_name = file_name.replace('.py', '')
 org_class_comps = org_class_name.split('_')
 
@@ -41,7 +60,8 @@ content = ''
 if colored:
     content += '# region [ rgba(0, 0, 0, 0.15) ]\n'
 
-content += '''# ---------------------------------------------------------------- Imports --------------------------------------------------------------- #
+content += comment_line('Imports')
+content += '''
 
 # System
 
@@ -51,57 +71,43 @@ content += '''# ----------------------------------------------------------------
 
 # Local
 
+
+
 '''
+content += comment_line()
 
 if colored:
-    content += '\n# endregion\n\n\n# region [ rgba(0, 0, 0, 0.2) ]'
+    content += '\n# endregion'
+
+content += '\n\n\n\n\n'
+
+if colored:
+    content += '# region [ rgba(0, 0, 0, 0.2) ]\n'
 
 if class_:
-    content += '''
-# ----------------------------------------------------------------- Class ---------------------------------------------------------------- #
+    content += comment_line('class: ' + class_name) + '\n\n' + 'class ' + class_name + ':\n\n' + comment_line('Init', indent=4) + '\n'
 
-class ''' + class_name + ''':
-    # ------------------------------------------------------------- Init ------------------------------------------------------------- #
+    content += '''
     def __init__(
         self
     ):
         return
 
 
-    # ------------------------------------------------------- Public properties ------------------------------------------------------ #
-
-
-    # --------------------------------------------------------- Public methods ------------------------------------------------------- #
-
-
-    # ------------------------------------------------------- Private properties ----------------------------------------------------- #
-
-
-    # --------------------------------------------------------- Private methods ------------------------------------------------------ #
-
-
-
-# ---------------------------------------------------------------------------------------------------------------------------------------- #'''
-
+'''
+    content += comment_line('Public properties', indent=4) + '\n\n\n\n'
+    content += comment_line('Public methods', indent=4) + '\n\n\n\n'
+    content += comment_line('Private properties', indent=4) + '\n\n\n\n'
+    content += comment_line('Private methods', indent=4) + '\n\n\n\n\n'
+    content += comment_line()
 else:
-    content += '''
-# ----------------------------------------------------------- Public properties ---------------------------------------------------------- #
-
-
-# ------------------------------------------------------------- Public methods ----------------------------------------------------------- #
-
-
-# ----------------------------------------------------------- Private properties --------------------------------------------------------- #
-
-
-# ------------------------------------------------------------- Private methods ---------------------------------------------------------- #
-
-
-
-# ---------------------------------------------------------------------------------------------------------------------------------------- #'''
+    content += comment_line('Public properties') + '\n\n\n\n'
+    content += comment_line('Public methods') + '\n\n\n\n'
+    content += comment_line('Private properties') + '\n\n\n\n'
+    content += comment_line('Private methods') + '\n\n\n'
 
 if colored:
-    content  += '# endregion'
+    content  += '\n# endregion'
 
 with open(file_name, 'w') as f:
     f.write(content)
