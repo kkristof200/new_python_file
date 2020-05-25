@@ -58,7 +58,7 @@ for org_class_comp in org_class_comps:
 content = ''
 
 if colored:
-    content += '# region [ rgba(0, 0, 0, 0.15) ]\n'
+    content += '# region [ rgba(0, 0, 0, 0.25) ]\n'
 
 content += comment_line('Imports')
 content += '''
@@ -82,7 +82,7 @@ if colored:
 content += '\n\n\n\n\n'
 
 if colored:
-    content += '# region [ rgba(0, 0, 0, 0.2) ]\n'
+    content += '# region [ rgba(0, 0, 0, 0.3) ]\n'
 
 if class_:
     content += comment_line('class: ' + class_name) + '\n\n' + 'class ' + class_name + ':\n\n' + comment_line('Init', indent=4) + '\n'
