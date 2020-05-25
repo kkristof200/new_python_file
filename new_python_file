@@ -45,7 +45,7 @@ def comment_line(text: str = '', indent: int = 0) -> str:
     if filler_chars_after != filler_chars_per_part:
         filler_chars_after += 1
 
-    return start + FILLER_CHAR * filler_chars_before + text + FILLER_CHAR * filler_chars_after + end
+    return start + FILLER_CHAR * filler_chars_before + text + FILLER_CHAR * filler_chars_after + end.strip()
 
 org_class_name = file_name.replace('.py', '')
 org_class_comps = org_class_name.split('_')
